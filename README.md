@@ -4,7 +4,8 @@ Now with extra stuff!!
 
 <h2>Description:</h2>
 
-So this is my second attempt at making my own shell based on the [Simple xv6 shell](https://pdos.csail.mit.edu/6.828/2019/labs/sh.html) by MIT.
+So this is my second attempt at making my own shell based on the [Simple xv6 shell](https://pdos.csail.mit.edu/6.828/2019/labs/sh.html) by MIT. <br>
+Will use `8===D` as my prompt to avoid confusion with the real shell as mentioned in the project description.
 
 <h2>Basic flow:</h2>
 
@@ -15,12 +16,12 @@ So this is my second attempt at making my own shell based on the [Simple xv6 she
 
 <h2>Execution examples:</h2>
 
-- Options: `$ pgrm -r -i /usr/filename ` **[not implemented]**
-- I/O redirections: `$ pgrm < in > out ` **[not implemented]**
-- Pipes: `$ pgrm1 | pgrm2 | pgrm3 ` **[not implemented]**
-- Sequencing: `$ pgrm1 ; pgrm2 ; pgrm3` **[not implemented]**
-- Background: `$ pgrm &` **[not implemented]**
-- Grouping: `$ (pgrm1 & pgrm2) | pgrm3` **[not implemented]**
+- Options: `8===D pgrm -r -i /usr/filename ` **[not implemented]**
+- I/O redirections: `8===D pgrm < in > out ` **[not implemented]**
+- Pipes: `8===D pgrm1 | pgrm2 | pgrm3 ` **[not implemented]**
+- Sequencing: `8===D pgrm1 ; pgrm2 ; pgrm3` **[not implemented]**
+- Background: `8===D pgrm &` **[not implemented]**
+- Grouping: `8===D (pgrm1 & pgrm2) | pgrm3` **[not implemented]**
 
 <h2>Built-in Commands:</h2>
 
