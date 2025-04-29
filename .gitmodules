@@ -1,0 +1,3 @@
+[submodule "xv6 OS"]
+	path = xv6 OS
+	url = git@github.com:mit-pdos/xv6-public.git
