@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g -I. -Iutils
 TARGET = shell
-SOURCES = shell.c utils/print_prompt.c
+SOURCES = shell.c utils/print_prompt.c utils/getcmd.c 
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(TARGET)
