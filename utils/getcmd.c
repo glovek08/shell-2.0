@@ -11,7 +11,7 @@ char *getcmd()
   size_t buffer_size = 0;
   ssize_t bytes_read = 0;
 
-  bytes_read = getline(&buffer, &buffer_size, STDIN_FILENO);
+  bytes_read = getline(&buffer, &buffer_size, stdin);
   if (bytes_read == -1)
   {
     if (feof(STDIN_FILENO))
@@ -35,7 +35,7 @@ char *getcmd()
       buffer[bytes_read - 1] = '\0';
       bytes_read--;
     }
-    printf("Command is: %s", buffer);
+    printf("Command is: %s\n", buffer);
     return (buffer);
     // parse command.
   }

@@ -12,13 +12,12 @@ int main(void)
 {
   char *command;
   bool isInteractive = isatty(STDIN_FILENO);
-  // char *cmd = NULL;
   // print one time only, on shell startup a welcoming message.
   while (true)
   {
     print_prompt(isInteractive);
     command = getcmd(); // REMEMBER TO FREE BUFFER FOR CMD!!!!
-    printf("command");
+    printf("Command is: %s\n", command);
     free(command);
   }
   return (EXIT_SUCCESS);
