@@ -3,8 +3,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <errno.h>
 
-void print_prompt()
+void print_prompt(bool isInteractive)
 {
-  write(STDOUT_FILENO, PROMPT, strlen(PROMPT));
+  if (isInteractive)
+  {
+    write(STDOUT_FILENO, PROMPT, strlen(PROMPT));
+  }
 }
