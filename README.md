@@ -37,3 +37,23 @@ Due to my skill gap and my tendency to vibe code, I will excuse myself from furt
 - Conditional control.
 - Built-in commands like; pwd, pushd, popd, history.
 - Line editing & arrow navigation to previous inputs.
+
+<h2>Installation: </h2>
+
+You can run this terminal in your own local shell if you're running linux, but for testing purposes and to make use of `user/ulib.c` libaries inside xv6, further implementation will move my source shell file to the specified path `user/shell.c`.
+
+<h3> Building and running xv6 </h3>
+
+To build xv6 on an x86 ELF machine (like Linux or FreeBSD), run
+"make". On non-x86 or non-ELF machines (like OS X, even on x86), you
+will need to install a cross-compiler gcc suite capable of producing
+x86 ELF binaries (see https://pdos.csail.mit.edu/6.828/).
+Then run "make TOOLPREFIX=i386-jos-elf-". Now install the QEMU PC
+simulator and run "make qemu".
+
+<h3> Running my shell </h3>
+
+- Navigate to the location of the shell's source file (`shell`).
+- Run it with `./shell`.
+- Once you see the prompt (`8===D`) you can input a command and the shell will run in interactive mode.
+- Alternatively you can pass commands as arguments using pipes, e.g `echo "ls -a" | ./shell`.
