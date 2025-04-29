@@ -5,7 +5,16 @@
 #include <stdio.h>
 #include <string.h>
 
-char *getcmd()
+/**
+ * getcmd - Reads a line of input from stdin.
+ * @command_ptr: Address of a char pointer to store the allocated command string.
+ *
+ * Return:
+ *  0: Success, command read into *command_ptr.
+ *  1: EOF reached. *command_ptr might be NULL or contain previous buffer.
+ * -1: Error reading input. *command_ptr might be NULL or contain previous buffer.
+ */
+int getcmd(char **command_ptr)
 {
   char *buffer = NULL;
   size_t buffer_size = 0;
@@ -14,29 +23,25 @@ char *getcmd()
   bytes_read = getline(&buffer, &buffer_size, stdin);
   if (bytes_read == -1)
   {
-    if (feof(STDIN_FILENO))
+    if (feof(stdin))
     {
       free(buffer);
+      *command_ptr = NULL;
       printf("EoF reached.\n");
-      exit(EXIT_SUCCESS);
+      return (1);
     }
     else
     {
       perror("getline");
-      fprintf(stderr, "Couldn't read command.\n");
       free(buffer);
-      exit(EXIT_FAILURE);
+      *command_ptr = NULL;
+      return (-1);
     }
   }
-  else
+  if (bytes_read > 0 && buffer[bytes_read - 1] == '\n')
   {
-    if (bytes_read > 0 && buffer[bytes_read - 1] == '\n')
-    {
-      buffer[bytes_read - 1] = '\0';
-      bytes_read--;
-    }
-    printf("Command is: %s\n", buffer);
-    return (buffer);
-    // parse command.
+    buffer[bytes_read - 1] = '\0';
   }
+  *command_ptr = buffer;
+  return (0);
 }
