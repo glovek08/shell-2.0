@@ -53,7 +53,19 @@ simulator and run "make qemu".
 
 <h3> Running my shell </h3>
 
+<h4> Running locally</h4>
+
 - Navigate to the location of the shell's source file (`shell`).
 - Run it with `./shell`.
 - Once you see the prompt (`8===D`) you can input a command and the shell will run in interactive mode.
 - Alternatively you can pass commands as arguments using pipes, e.g `echo "ls -a" | ./shell`.
+
+<h4>Running in xv6 **[not implemented]**</h4>
+
+- Copy main shell compiler to `xv6 OS/user/` and rename it to `sh.c` this is to make it compatible with xv6: `cp shell.c "xv6 OS/user/sh.c"`.
+- Same with utils and header: `cp utils/print_prompt.c utils/getcmd.c main.h "xv6 OS/user/"`.
+- Clean previous builds: `make clean`.
+- Build xv6: `make`.
+- Run xv6 in QEMU: `make qemu`.
+
+\*<i>Current implementation is not fully compatible with xv6.</i>
