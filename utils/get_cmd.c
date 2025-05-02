@@ -3,10 +3,9 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
-#include <string.h>
 
 /**
- * getcmd - Reads a line of input from stdin.
+ * get_cmd - Reads a line of input from stdin.
  * @command_ptr: Address of a char pointer to store the allocated command string.
  *
  * Return:
@@ -14,10 +13,10 @@
  *  1: EOF reached. *command_ptr might be NULL or contain previous buffer.
  * -1: Error reading input. *command_ptr might be NULL or contain previous buffer.
  */
-int getcmd(char **command_ptr)
+int get_cmd(char **command_ptr)
 {
   char *buffer = NULL;
-  size_t buffer_size = 0;
+  size_t buffer_size = 5;
   ssize_t bytes_read = 0;
 
   bytes_read = getline(&buffer, &buffer_size, stdin);
@@ -27,7 +26,6 @@ int getcmd(char **command_ptr)
     {
       free(buffer);
       *command_ptr = NULL;
-      printf("EoF reached.\n");
       return (1);
     }
     else

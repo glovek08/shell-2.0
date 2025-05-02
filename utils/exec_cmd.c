@@ -2,6 +2,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int execmd(char *cmd)
+int exec_cmd(char *cmd)
 {
 }
