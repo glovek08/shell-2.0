@@ -25,9 +25,8 @@ Will use `8===D` as my prompt to avoid confusion with the real shell as mentione
 
 <h2>Built-in Commands:</h2>
 
-- `cd path`
 - `exit`
-- `printenv`
+- `env`
 
 <h2>Will not implement</h3>
 
