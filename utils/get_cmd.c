@@ -25,6 +25,7 @@ int get_cmd(char **command_ptr)
     if (feof(stdin))
     {
       free(buffer);
+      printf("*** GOODBYE! ***\n");
       *command_ptr = NULL;
       return (1);
     }
