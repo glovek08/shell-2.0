@@ -20,5 +20,6 @@ typedef struct Command
 void print_prompt(bool);
 int get_cmd(char **command_ptr);
 struct Command parse_command(char *input_line);
+int exec_cmd(cmd parsed_command);
 
 #endif /* MAIN_H */
