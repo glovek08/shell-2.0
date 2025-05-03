@@ -35,8 +35,8 @@ int main(void)
 
       exec_cmd(parsed_cmd);
 
-      // TODO: 1. Check if it's a built-in command (e.g., exit, env)
-      // TODO: 2. If not built-in, fork child process and execute command
+      // TODO: check if it's a built-in command.
+      // TODO: posix compliance.
       // I completely ignored TODO 1 sorry Polo.
     }
     else if (cmd_status == 1)
