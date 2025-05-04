@@ -10,8 +10,8 @@
  *
  * Return:
  *  0: Success, command read into *command_ptr.
- *  1: EOF reached. *command_ptr might be NULL or contain previous buffer.
- * -1: Error reading input. *command_ptr might be NULL or contain previous buffer.
+ *  1: EOF reached.
+ * -1: Error reading input.
  */
 int get_cmd(char **command_ptr)
 {

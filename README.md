@@ -1,6 +1,4 @@
 <h1>Simple Shell v2</h1>
-Cause I fucked up in the previous one <br>
-Now with extra stuff!!
 
 <h2>Description:</h2>
 
@@ -11,12 +9,12 @@ Will use `8===D` as my prompt to avoid confusion with the real shell as mentione
 
 1. Print prompt to standard output.
 2. Reads line from standard input.
-3. Parses it.
-4. Execute (Repeat).
+3. Parses command.
+4. Executes it (Repeat).
 
 <h2>Execution examples:</h2>
 
-- Options: `8===D pgrm -r -i /usr/filename ` **[not implemented]**
+- Options: `8===D pgrm -r -i /usr/filename `
 - I/O redirections: `8===D pgrm < in > out ` **[not implemented]**
 - Pipes: `8===D pgrm1 | pgrm2 | pgrm3 ` **[not implemented]**
 - Sequencing: `8===D pgrm1 ; pgrm2 ; pgrm3` **[not implemented]**

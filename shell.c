@@ -20,7 +20,7 @@ int main(void)
   cmd parsed_command;
   char **temp_env = environ;
 
-  while (true)
+  for (;;)
   {
     print_prompt(isInteractive);
     free(command);
@@ -48,6 +48,7 @@ int main(void)
       exec_cmd(parsed_command);
 
       // TODO: posix compliance.
+      // TODO: I/O redirections.
       // I completely ignored TODO 1 sorry Polo.
     }
     else if (cmd_status == 1)
