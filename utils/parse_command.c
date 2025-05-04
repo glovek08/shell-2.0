@@ -37,13 +37,13 @@ cmd parse_command(char *input_line)
   }
 
   // ******** DEBUG STUFF *********
-  printf("Command Parsed...\n");
-  printf("Cmd ID: %s\n", new_command.cmd_id ? new_command.cmd_id : "(null)");
-  printf("Cmd Arguments: ");
-  for (int k = 0; k < new_command.arg_count; k++)
-    printf("[%s] ", new_command.args[k]);
-  printf("\n");
-  printf("Cmd Args Counter: %i\n", new_command.arg_count);
+  // printf("Command Parsed...\n");
+  // printf("Cmd ID: %s\n", new_command.cmd_id ? new_command.cmd_id : "(null)");
+  // printf("Cmd Arguments: ");
+  // for (int k = 0; k < new_command.arg_count; k++)
+  //   printf("[%s] ", new_command.args[k]);
+  // printf("\n");
+  // printf("Cmd Args Counter: %i\n", new_command.arg_count);
 
   return (new_command);
 }

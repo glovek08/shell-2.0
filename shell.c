@@ -18,6 +18,7 @@ int main(void)
   bool isInteractive = isatty(STDIN_FILENO);
   int cmd_status;
   cmd parsed_command;
+  char **temp_env = environ;
 
   while (true)
   {
@@ -37,10 +38,10 @@ int main(void)
         break;
       else if (strcmp(parsed_command.args[0], "env") == 0)
       {
-        while (*environ != NULL)
+        while (*temp_env != NULL)
         {
-          printf("%s\n", *environ);
-          environ++;
+          printf("%s\n", *temp_env);
+          temp_env++;
         }
         continue;
       }

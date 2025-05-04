@@ -15,15 +15,15 @@ int exec_cmd(cmd parsed_command)
   if (!parsed_command.args[0])
     return (1);
 
-  printf("PID: %i\n", getpid());
+  // printf("PID: %i\n", getpid());
 
   pid_t pid = fork();
   int status;
 
-  printf("Hello, I execute commands \n");
-  printf("You've gave me: %s\n", parsed_command.cmd_id);
-  printf("PPID: %i\n", getppid());
-  printf("PID: %i\n", getpid());
+  // printf("Hello, I execute commands \n");
+  // printf("You've gave me: %s\n", parsed_command.cmd_id);
+  // printf("PPID: %i\n", getppid());
+  // printf("PID: %i\n", getpid());
 
   if (pid == -1)
   {
