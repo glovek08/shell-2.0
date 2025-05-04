@@ -32,7 +32,9 @@ cmd parse_command(char *input_line)
 
   new_command.arg_count = i;
   if (new_command.arg_count > 0)
+  {
     new_command.cmd_id = new_command.args[0];
+  }
 
   // ******** DEBUG STUFF *********
   printf("Command Parsed...\n");

@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <string.h>
 
 /**
  * Return: 1 nothing to execute, 0 everything OK, -1 error.

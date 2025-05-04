@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <stdbool.h>
+
+extern char **environ;
 /**
  * main - Entry point.
  *
@@ -15,7 +17,7 @@ int main(void)
   char *command = NULL;
   bool isInteractive = isatty(STDIN_FILENO);
   int cmd_status;
-  cmd parsed_cmd;
+  cmd parsed_command;
 
   while (true)
   {
@@ -28,14 +30,22 @@ int main(void)
     {
       if (command == NULL || command[0] == '\0')
         continue;
-      parsed_cmd = parse_command(command);
-
-      if (parsed_cmd.arg_count == 0)
+      parsed_command = parse_command(command);
+      if (parsed_command.arg_count == 0)
         continue;
+      if (strcmp(parsed_command.args[0], "exit") == 0)
+        break;
+      else if (strcmp(parsed_command.args[0], "env") == 0)
+      {
+        while (*environ != NULL)
+        {
+          printf("%s\n", *environ);
+          environ++;
+        }
+        continue;
+      }
+      exec_cmd(parsed_command);
 
-      exec_cmd(parsed_cmd);
-
-      // TODO: check if it's a built-in command.
       // TODO: posix compliance.
       // I completely ignored TODO 1 sorry Polo.
     }
