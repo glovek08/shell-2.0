@@ -15,7 +15,7 @@ Will use `8===D` as my prompt to avoid confusion with the real shell as mentione
 <h2>Execution examples:</h2>
 
 - Options: `8===D pgrm -r -i /usr/filename `
-- I/O redirections: `8===D pgrm < in > out ` **[not implemented]**
+- I/O redirections: `8===D pgrm < in > out ` **[69% implemented]**
 - Pipes: `8===D pgrm1 | pgrm2 | pgrm3 ` **[not implemented]**
 - Sequencing: `8===D pgrm1 ; pgrm2 ; pgrm3` **[not implemented]**
 - Background: `8===D pgrm &` **[not implemented]**
