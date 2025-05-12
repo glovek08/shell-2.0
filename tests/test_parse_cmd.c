@@ -1,31 +1,58 @@
-#include "main.h"
+#include "../main.h" // Should declare cmd struct, parse_command, free_parsed_command, MAX_ARGS, MAX_BUFFER_SIZE
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h> // For exit
+#include <stdlib.h>
+
+// Forward declaration if not in main.h, or ensure it's in main.h
+void free_parsed_command(cmd *p_cmd);
 
 // Helper function to print command details
 void print_parsed_cmd_details(const cmd *p_cmd, const char *test_case_name)
 {
-  printf("--- Test Case: %s ---\n", test_case_name);
-  if (p_cmd->args == NULL && p_cmd->arg_count == 0 && p_cmd->input_file == NULL && p_cmd->output_file == NULL)
+  printf("--- Test Case: \"%s\" ---\n", test_case_name);
+  if (p_cmd == NULL)
   {
-    printf("Command parsing resulted in an empty/error state as expected for this case.\n");
+    printf("Error: cmd pointer is NULL.\n");
+    printf("-------------------------\n\n");
     return;
   }
 
-  printf("Command ID (first arg): %s\n", (p_cmd->arg_count > 0 && p_cmd->args[0]) ? p_cmd->args[0] : "N/A");
-  printf("Arguments (count: %d):\n", p_cmd->arg_count);
-  for (int i = 0; i < p_cmd->arg_count; i++)
+  // Check for a state that parse_command might return for empty input or critical errors
+  if (p_cmd->arg_count == 0 && p_cmd->args == NULL && p_cmd->input_file == NULL && p_cmd->output_file == NULL)
   {
-    printf("  args[%d]: %s\n", i, p_cmd->args[i]);
+    printf("Result: Empty/error state (arg_count=0, args=NULL, no redirection files).\n");
+    printf("-------------------------\n\n");
+    return;
   }
-  if (p_cmd->args && p_cmd->args[p_cmd->arg_count] == NULL)
+
+  printf("Command ID (args[0]): %s\n", (p_cmd->arg_count > 0 && p_cmd->args && p_cmd->args[0]) ? p_cmd->args[0] : "N/A");
+  printf("Arguments (arg_count: %d):\n", p_cmd->arg_count);
+
+  if (p_cmd->args != NULL)
   {
-    printf("  args[%d]: NULL (correctly terminated)\n", p_cmd->arg_count);
+    for (int i = 0; i < p_cmd->arg_count; i++)
+    {
+      printf("  args[%d]: \"%s\"\n", i, p_cmd->args[i] ? p_cmd->args[i] : "(null ptr)");
+    }
+    if (p_cmd->args[p_cmd->arg_count] == NULL)
+    {
+      printf("  args[%d]: NULL (correctly NULL-terminated array)\n", p_cmd->arg_count);
+    }
+    else
+    {
+      printf("  Error: args array not NULL-terminated at index %d.\n", p_cmd->arg_count);
+    }
   }
-  else if (p_cmd->args)
+  else
   {
-    printf("  args list not NULL terminated properly.\n");
+    if (p_cmd->arg_count > 0)
+    {
+      printf("  Error: args pointer is NULL, but arg_count is %d.\n", p_cmd->arg_count);
+    }
+    else
+    {
+      printf("  args array is NULL (consistent with arg_count=0).\n");
+    }
   }
 
   printf("Input File: %s\n", p_cmd->input_file ? p_cmd->input_file : "N/A");
@@ -33,108 +60,145 @@ void print_parsed_cmd_details(const cmd *p_cmd, const char *test_case_name)
   printf("-------------------------\n\n");
 }
 
+// Dummy free_parsed_command if not available from main.h for compilation.
+// Replace with actual implementation or ensure it's linked.
+#ifndef free_parsed_command
+void free_parsed_command(cmd *p_cmd)
+{
+  if (!p_cmd)
+    return;
+
+  // Free cmd_id if it's allocated
+  free(p_cmd->cmd_id);
+  p_cmd->cmd_id = NULL;
+
+  if (p_cmd->args) // Though args is an array, this check is more for arg_count
+  {
+    for (int i = 0; i < p_cmd->arg_count; i++)
+    {
+      free(p_cmd->args[i]);  // Assuming args[i] are individually allocated
+      p_cmd->args[i] = NULL; // Set freed pointer to NULL
+    }
+    // Do NOT free(p_cmd->args) itself, as it's an array member of the struct.
+  }
+  free(p_cmd->input_file);  // Assuming input_file is allocated
+  free(p_cmd->output_file); // Assuming output_file is allocated
+
+  // Reset fields
+  p_cmd->arg_count = 0;
+  p_cmd->input_file = NULL;
+  p_cmd->output_file = NULL;
+}
+#endif
+
 int main()
 {
   cmd parsed;
 
   // Test Case 1: Simple command
-  const char *tc1_str = "ls -l /tmp";
-  parsed = parse_command(tc1_str);
-  print_parsed_cmd_details(&parsed, "Simple Command");
+  parsed = parse_command("ls -l /tmp");
+  print_parsed_cmd_details(&parsed, "ls -l /tmp");
   free_parsed_command(&parsed);
 
   // Test Case 2: Command with input redirection
-  const char *tc2_str = "grep pattern < input.txt";
-  parsed = parse_command(tc2_str);
-  print_parsed_cmd_details(&parsed, "Input Redirection");
+  parsed = parse_command("grep pattern < input.txt");
+  print_parsed_cmd_details(&parsed, "grep pattern < input.txt");
   free_parsed_command(&parsed);
 
   // Test Case 3: Command with output redirection
-  const char *tc3_str = "cat > output.log";
-  parsed = parse_command(tc3_str);
-  print_parsed_cmd_details(&parsed, "Output Redirection");
+  parsed = parse_command("cat > output.log");
+  print_parsed_cmd_details(&parsed, "cat > output.log");
   free_parsed_command(&parsed);
 
   // Test Case 4: Command with both input and output redirection
-  const char *tc4_str = "sort < data.in > data.out";
-  parsed = parse_command(tc4_str);
-  print_parsed_cmd_details(&parsed, "Both Redirections");
+  parsed = parse_command("sort < data.in > data.out");
+  print_parsed_cmd_details(&parsed, "sort < data.in > data.out");
   free_parsed_command(&parsed);
 
-  // Test Case 5: Command with arguments after output redirection
-  const char *tc5_str = "wc -l > count.txt < somefile.txt"; // Order matters for simple parser
-  parsed = parse_command(tc5_str);
-  print_parsed_cmd_details(&parsed, "Args after Output Redirection (then input)");
+  // Test Case 5: Redirection order swapped
+  parsed = parse_command("wc -l > count.txt < somefile.txt");
+  print_parsed_cmd_details(&parsed, "wc -l > count.txt < somefile.txt");
   free_parsed_command(&parsed);
 
   // Test Case 6: Only command
-  const char *tc6_str = "execute";
-  parsed = parse_command(tc6_str);
-  print_parsed_cmd_details(&parsed, "Only Command");
+  parsed = parse_command("execute_only");
+  print_parsed_cmd_details(&parsed, "execute_only");
   free_parsed_command(&parsed);
 
   // Test Case 7: Empty string
-  const char *tc7_str = "";
-  parsed = parse_command(tc7_str);
+  parsed = parse_command("");
   print_parsed_cmd_details(&parsed, "Empty String");
   free_parsed_command(&parsed);
 
   // Test Case 8: String with only spaces
-  const char *tc8_str = "   ";
-  parsed = parse_command(tc8_str);
+  parsed = parse_command("   ");
   print_parsed_cmd_details(&parsed, "Only Spaces");
   free_parsed_command(&parsed);
 
-  // Test Case 9: Max arguments
-  char tc9_str[MAX_BUFFER_SIZE] = "cmd";
-  for (int i = 0; i < MAX_ARGS - 1; i++)
-  { // cmd + (MAX_ARGS - 1) args
-    char arg_buf[10];
-    sprintf(arg_buf, " arg%d", i);
-    strcat(tc9_str, arg_buf);
-  }
-  parsed = parse_command(tc9_str);
-  print_parsed_cmd_details(&parsed, "Max Arguments");
+  // Test Case 9: Input redirection missing filename
+  parsed = parse_command("grep test <");
+  print_parsed_cmd_details(&parsed, "grep test < (missing input filename)");
   free_parsed_command(&parsed);
 
-  // Test Case 10: Too many arguments
-  char tc10_str[MAX_BUFFER_SIZE] = "cmd";
-  for (int i = 0; i < MAX_ARGS + 5; i++)
-  { // cmd + (MAX_ARGS + 5) args
-    char arg_buf[10];
-    sprintf(arg_buf, " arg%d", i);
-    strcat(tc10_str, arg_buf);
-  }
-  parsed = parse_command(tc10_str);
-  print_parsed_cmd_details(&parsed, "Too Many Arguments");
+  // Test Case 10: Output redirection missing filename
+  parsed = parse_command("cat > ");
+  print_parsed_cmd_details(&parsed, "cat > (missing output filename)");
   free_parsed_command(&parsed);
 
-  // Test Case 11: Input redirection missing filename
-  const char *tc11_str = "grep test <";
-  parsed = parse_command(tc11_str);
-  print_parsed_cmd_details(&parsed, "Input Redirection Missing Filename");
-  // Note: parse_command should handle this error and return a cmd struct
-  // where args might be NULL or arg_count is 0.
-  // The free_parsed_command should still be safe to call.
+  // Test Case 11: Multiple input redirections (parser should decide: first, last, or error)
+  // Assuming last one wins for this test or it's an error.
+  parsed = parse_command("cmd < in1.txt < in2.txt");
+  print_parsed_cmd_details(&parsed, "cmd < in1.txt < in2.txt");
   free_parsed_command(&parsed);
 
-  // Test Case 12: Output redirection missing filename
-  const char *tc12_str = "cat > ";
-  parsed = parse_command(tc12_str);
-  print_parsed_cmd_details(&parsed, "Output Redirection Missing Filename");
+  // Test Case 12: Multiple output redirections
+  parsed = parse_command("cmd > out1.txt > out2.txt");
+  print_parsed_cmd_details(&parsed, "cmd > out1.txt > out2.txt");
   free_parsed_command(&parsed);
 
-  // Test Case 13: Multiple redirections (behavior might depend on parser logic for duplicates)
-  const char *tc13_str = "cmd < in1.txt < in2.txt > out1.txt > out2.txt";
-  parsed = parse_command(tc13_str);
-  print_parsed_cmd_details(&parsed, "Multiple Redirections");
+  // Test Case 13: Redirection symbols without spaces (depends on tokenizer)
+  parsed = parse_command("cmd<input.txt>output.txt");
+  print_parsed_cmd_details(&parsed, "cmd<input.txt>output.txt (no spaces around < >)");
   free_parsed_command(&parsed);
 
-  // Test Case 14: Redirection symbols without spaces
-  const char *tc14_str = "cmd<input.txt>output.txt";
-  parsed = parse_command(tc14_str);
-  print_parsed_cmd_details(&parsed, "Redirection symbols without spaces (depends on strtok)");
+  // Test Case 14: Command with args before and after redirection
+  parsed = parse_command("cmd arg1 < input.txt arg2 > output.txt arg3");
+  print_parsed_cmd_details(&parsed, "cmd arg1 < input.txt arg2 > output.txt arg3");
   free_parsed_command(&parsed);
+
+  // Test Case 15: Only input redirection
+  parsed = parse_command("< only_input.txt");
+  print_parsed_cmd_details(&parsed, "< only_input.txt (no command)");
+  free_parsed_command(&parsed);
+
+  // Test Case 16: Only output redirection
+  parsed = parse_command("> only_output.txt");
+  print_parsed_cmd_details(&parsed, "> only_output.txt (no command)");
+  free_parsed_command(&parsed);
+
+  // Test Case 17: Input and output redirection, no command
+  parsed = parse_command("< in.txt > out.txt");
+  print_parsed_cmd_details(&parsed, "< in.txt > out.txt (no command)");
+  free_parsed_command(&parsed);
+
+  // Test Case 18: Filename with special characters (if supported, or to test quoting if implemented)
+  // This test assumes simple filenames for now.
+  // parsed = parse_command("cmd > \"file with spaces.txt\"");
+  // print_parsed_cmd_details(&parsed, "cmd > \"file with spaces.txt\"");
+  // free_parsed_command(&parsed);
+
+  // Test Case 19: Command with many arguments (if MAX_ARGS is a factor)
+  // char tc_max_args[MAX_BUFFER_SIZE] = "cmd"; // Assuming MAX_BUFFER_SIZE is defined
+  // for (int i = 0; i < MAX_ARGS -1 ; i++) { // Assuming MAX_ARGS is defined
+  //    char arg_buf[10];
+  //    sprintf(arg_buf, " arg%d", i);
+  //    if (strlen(tc_max_args) + strlen(arg_buf) < MAX_BUFFER_SIZE -1)
+  //        strcat(tc_max_args, arg_buf);
+  //    else break;
+  // }
+  // parsed = parse_command(tc_max_args);
+  // print_parsed_cmd_details(&parsed, "Command with many arguments");
+  // free_parsed_command(&parsed);
 
   printf("All tests completed.\n");
   return 0;

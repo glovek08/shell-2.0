@@ -15,15 +15,8 @@ int exec_cmd(cmd parsed_command)
   if (!parsed_command.args[0])
     return (1);
 
-  // printf("PID: %i\n", getpid());
-
   pid_t pid = fork();
   int status;
-
-  // printf("Hello, I execute commands \n");
-  // printf("You've gave me: %s\n", parsed_command.cmd_id);
-  // printf("PPID: %i\n", getppid());
-  // printf("PID: %i\n", getpid());
 
   if (pid == -1)
   {
@@ -32,6 +25,39 @@ int exec_cmd(cmd parsed_command)
   }
   else if (pid == 0)
   {
+    if (parsed_command.input_file != NULL)
+    {
+      int fd_in = open(parsed_command.input_file, O_RDONLY);
+      if (fd_in == -1)
+      {
+        perror(parsed_command.input_file);
+        exit(1);
+      }
+      if (dup2(fd_in, STDIN_FILENO) == -1)
+      {
+        perror("dup2 input");
+        close(fd_in);
+        exit(1);
+      }
+      close(fd_in);
+    }
+    if (parsed_command.output_file != NULL)
+    {
+      int fd_out = open(parsed_command.output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+      if (fd_out == -1)
+      {
+        perror(parsed_command.output_file);
+        exit(1);
+      }
+      if (dup2(fd_out, STDOUT_FILENO) == -1)
+      {
+        perror("dup2 output");
+        close(fd_out);
+        exit(1);
+      }
+      close(fd_out);
+    }
+
     if (execvp(parsed_command.cmd_id, parsed_command.args) == -1)
     {
       fprintf(stderr, "./shell: 1: %s: not found\n", parsed_command.args[0]);

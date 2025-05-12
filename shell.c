@@ -32,8 +32,11 @@ int main(void)
       if (command == NULL || command[0] == '\0')
         continue;
       parsed_command = parse_command(command);
-      if (parsed_command.arg_count == 0)
-        continue;
+      if (parsed_command.arg_count == 0 && !parsed_command.input_file && !parsed_command.output_file) // Allow empty command if redirection occurs
+      {
+        if (parsed_command.arg_count == 0)
+          continue;
+      }
       if (strcmp(parsed_command.args[0], "exit") == 0)
         break;
       else if (strcmp(parsed_command.args[0], "env") == 0)
@@ -46,10 +49,6 @@ int main(void)
         continue;
       }
       exec_cmd(parsed_command);
-
-      // TODO: posix compliance.
-      // TODO: I/O redirections.
-      // I completely ignored TODO 1 sorry Polo.
     }
     else if (cmd_status == 1)
     {

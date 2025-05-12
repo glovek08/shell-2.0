@@ -14,6 +14,8 @@ typedef struct Command
   char *cmd_id;             // From PATH /usr/bin/ls
   char *args[MAX_ARGS + 1]; // -a -v
   int arg_count;            // 2
+  char *input_file;
+  char *output_file;
 } cmd;
 
 // ***** PROTOTYPE REALM ******
